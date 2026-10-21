@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn T?p Toán 12 - Ti?m C?n Ð? Th? Hàm S?</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eef2ff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .question-box {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+        }
+
+        .option-item {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-color);
+            background: #f8fafc;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary-color);
+            background: #eef2ff;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .option-item.correct {
+            border-color: var(--success-color);
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .option-item.incorrect {
+            border-color: var(--error-color);
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .explanation {
+            background: #f9fafb;
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            display: none;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .result-screen h2 {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .score-badge {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
+        }
+
+        .table-preview {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Ôn T?p Toán 12</h1>
+        <p>Ch? ð?: Ti?m c?n ð?ng, ti?m c?n ngang, ti?m c?n xiên ð? th? hàm s?</p>
+    </header>
+
+    <div id="quiz-screen">
+        <div class="quiz-info">
+            <span id="question-counter">Câu h?i 1/10</span>
+            <span id="timer">Th?i gian: 0s</span>
+        </div>
+
+        <div class="question-box" id="question-text">Ðang t?i câu h?i...</div>
+        <div id="extra-content"></div>
+
+        <ul class="options-list" id="options-container">
+            <!-- Các l?a ch?n s? ðý?c render b?ng JS -->
+        </ul>
+
+        <div class="explanation" id="explanation-box">
+            <strong>Hý?ng d?n gi?i: </strong><span id="explanation-text"></span>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Câu ti?p theo</button>
+        </div>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+        <h2>Hoàn thành xu?t s?c!</h2>
+        <p>Em ð? hoàn thành bài ôn t?p ti?m c?n ð? th? hàm s?.</p>
+        <div class="score-badge" id="final-score">0/10</div>
+        <button class="btn" onclick="restartQuiz()">Làm l?i bài</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Câu 1. Ti?m c?n ngang c?a ð? th? hàm s? y = (2x - 1) / (3x + 1) là:",
+            options: ["A. y = 2/3", "B. x = -1", "C. y = 1", "D. x = 3"],
+            correct: 0,
+            explanation: "H? s? cao nh?t c?a t? là 2, c?a m?u là 3. Ti?m c?n ngang là y = 2/3."
+        },
+        {
+            question: "Câu 2. Cho hàm s? có b?ng bi?n thiên: x ch?y t? -inf ð?n +inf, có ti?m c?n ð?ng t?i x = 0 (2 g?ch s?c) và ti?m c?n ngang y = 2 khi x -> -inf. T?ng s? ti?m c?n ð?ng và ti?m c?n ngang c?a ð? th? hàm s? ð? cho là:",
+            options: ["A. 2", "B. 1", "C. 3", "D. 4"],
+            correct: 0,
+            explanation: "D?a vào b?ng bi?n thiên, ð? th? có 1 ti?m c?n ngang (y = 2) và 1 ti?m c?n ð?ng (x = 0). T?ng s? ti?m c?n là 2."
+        },
+        {
+            question: "Câu 3. Ti?m c?n ngang c?a ð? th? hàm s? y = (-4x + 1) / (3x + 2) là:",
+            options: ["A. y = 1", "B. x = -1", "C. y = -4/3", "D. x = -3"],
+            correct: 2,
+            explanation: "L?y h? s? c?a x ? t? chia cho h? s? c?a x ? m?u: y = -4/3."
+        },
+        {
+            question: "Câu 4. T?m ti?m c?n ngang c?a ð? th? hàm s? y = (2x - 3) / (x - 1):",
+            options: ["A. y = 1", "B. x = 1", "C. y = -3", "D. y = 2"],
+            correct: 3,
+            explanation: "H? s? b?c cao nh?t: y = 2/1 = 2."
+        },
+        {
+            question: "Câu 5. D?a vào b?ng bi?n thiên c?a hàm s? (v?i ti?m c?n ð?ng x = -1 và ti?m c?n ngang y = 2), h?y ch?n kh?ng ð?nh SAI:",
+            options: [
+                "A. Ð? th? hàm s? có ti?m c?n ð?ng x = -1.",
+                "B. Ð? th? hàm s? có 2 ti?m c?n.",
+                "C. Ð? th? hàm s? có ði?m c?c ti?u (2; -1).",
+                "D. Ð? th? hàm s? có ti?m c?n ngang y = 2."
+            ],
+            correct: 2,
+            explanation: "B?ng bi?n thiên ð?ng bi?n trên các kho?ng xác ð?nh và không ð?i d?u y', do ðó hàm s? không có c?c tr?. Kh?ng ð?nh C là sai."
+        },
+        {
+            question: "Câu 6. Ð? th? hàm s? y = (x^2 - 2x - 3) / (x - 1) có ti?m c?n xiên là ðý?ng th?ng:",
+            options: ["A. y = x - 1", "B. y = x + 1", "C. y = x - 2", "D. y = 2x - 1"],
+            correct: 0,
+            explanation: "Th?c hi?n phép chia ða th?c (x^2 - 2x - 3) cho (x - 1) ta ðý?c thýõng là x - 1 ph?n dý -4/(x-1). V?y ti?m c?n xiên là y = x - 1."
+        },
+        {
+            question: "Câu 7. Ti?m c?n xiên c?a ð? th? hàm s? y = (2x^2 - x + 1) / (x + 1) là:",
+            options: ["A. y = 2x - 3", "B. y = 2x + 1", "C. y = x - 2", "D. y = 2x - 2"],
+            correct: 0,
+            explanation: "Chia t? cho m?u: (2x^2 - x + 1) : (x + 1) = 2x - 3 dý 4. Ðý?ng ti?m c?n xiên là y = 2x - 3."
+        },
+        {
+            question: "Câu 8. Cho hàm s? y = x + 1 + 3/(x - 2). Ti?m c?n xiên c?a ð? th? hàm s? là ðý?ng th?ng:",
+            options: ["A. y = x + 1", "B. y = x - 2", "C. y = x + 3", "D. y = 3x - 2"],
+            correct: 0,
+            explanation: "Hàm s? có d?ng y = ax + b + c/(x - x0) v?i ph?n dý ti?n v? 0 khi x ra vô c?c. Do ðó ti?m c?n xiên là ph?n ða th?c y = x + 1."
+        },
+        {
+            question: "Câu 9. Phýõng tr?nh ðý?ng ti?m c?n xiên c?a ð? th? hàm s? y = (x^2 + 2x - 1) / (x - 1) là:",
+            options: ["A. y = x + 3", "B. y = x - 1", "C. y = 2x + 1", "D. y = x + 2"],
+            correct: 0,
+            explanation: "Th?c hi?n phép chia ða th?c: (x^2 + 2x - 1) / (x - 1) = x + 3 + 2/(x - 1). V?y ti?m c?n xiên là y = x + 3."
+        },
+        {
+            question: "Câu 10. Ti?m c?n xiên c?a ð? th? hàm s? y = 2x - 1 + 1/(x + 1) là:",
+            options: ["A. y = 2x - 1", "B. y = x + 1", "C. y = 2x + 1", "D. y = x - 1"],
+            correct: 0,
+            explanation: "Khi x ti?n t?i vô c?c, phân s? 1/(x + 1) ti?n t?i 0. Ðý?ng ti?m c?n xiên là ph?n ða th?c y = 2x - 1."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+    let seconds = 0;
+    let timerInterval;
+
+    const questionCounter = document.getElementById("question-counter");
+    const timerDisplay = document.getElementById("timer");
+    const questionText = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const explanationBox = document.getElementById("explanation-box");
+    const explanationText = document.getElementById("explanation-text");
+    const nextBtn = document.getElementById("next-btn");
+    const quizScreen = document.getElementById("quiz-screen");
+    const resultScreen = document.getElementById("result-screen");
+    const finalScore = document.getElementById("final-score");
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            seconds++;
+            timerDisplay.innerText = `Th?i gian: ${seconds}s`;
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        answered = false;
+        nextBtn.disabled = true;
+        explanationBox.style.display = "none";
+
+        let currentQ = questions[currentQuestionIndex];
+        questionCounter.innerText = `Câu h?i ${currentQuestionIndex + 1}/10`;
+        questionText.innerText = currentQ.question;
+
+        optionsContainer.innerHTML = "";
+        currentQ.options.forEach((option, index) => {
+            const li = document.createElement("li");
+            li.className = "option-item";
+            li.innerText = option;
+            li.onclick = () => selectOption(index);
+            optionsContainer.appendChild(li);
+        });
+    }
+
+    function selectOption(selectedIndex) {
+        if (answered) return;
+        answered = true;
+
+        let currentQ = questions[currentQuestionIndex];
+        const optionItems = optionsContainer.children;
+
+        if (selectedIndex === currentQ.correct) {
+            optionItems[selectedIndex].classList.add("correct");
+            score++;
+        } else {
+            optionItems[selectedIndex].classList.add("incorrect");
+            optionItems[currentQ.correct].classList.add("correct");
+        }
+
+        explanationText.innerText = currentQ.explanation;
+        explanationBox.style.display = "block";
+        nextBtn.disabled = false;
+
+        if (currentQuestionIndex === questions.length - 1) {
+            nextBtn.innerText = "Xem k?t qu?";
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            clearInterval(timerInterval);
+            quizScreen.style.display = "none";
+            resultScreen.style.display = "block";
+            finalScore.innerText = `${score}/10`;
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        seconds = 0;
+        quizScreen.style.display = "block";
+        resultScreen.style.display = "none";
+        nextBtn.innerText = "Câu ti?p theo";
+        clearInterval(timerInterval);
+        startTimer();
+        loadQuestion();
+    }
+
+    // Kh?i ch?y tr? chõi l?n ð?u
+    startTimer();
+    loadQuestion();
+</script>
+
+</body>
+</html>
